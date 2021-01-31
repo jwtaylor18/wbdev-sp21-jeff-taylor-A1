@@ -1,0 +1,21 @@
+body {
+  background-color: rgb(243, 242, 242);
+}
+
+.table-entry {
+  background-color: white;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  align-items: center;
+  border: solid;
+  border-color: lightgrey;
+  border-width: .1px;
+}
+
+.table-heading {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  align-items: center;
+  font-weight: bold;
+}
+
