@@ -19,7 +19,13 @@ body {
   font-weight: bold;
 }
 
-input {
-  width: 30px;
+#newTitle {
+  width: 50%;
 }
+
+#plusIcon {
+  margin-left: 30px;
+  color: white;
+}
+
 

@@ -15,6 +15,10 @@
   color: white;
   margin-top: 10px;
   align-self: flex-end
+}
 
+.nav-pills .nav-link {
+  color: green;
+  background-color: ;
 }
 
