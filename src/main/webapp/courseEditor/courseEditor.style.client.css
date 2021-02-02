@@ -18,7 +18,10 @@
 }
 
 .nav-pills .nav-link {
-  color: green;
-  background-color: black
+  color: black;
+  background-color:#c6c8ca;
+  margin-left: 15px;
+  margin-right: 15px;
+  
 }
 
