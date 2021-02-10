@@ -1,14 +1,9 @@
 (function () {
-    var users = [
-        {id: 123, username: 'alice', firstName: 'Alice'},
-        {id: 456, username: 'bob', firstName: 'Bob'},
-        {id: 789, username: 'charlie', firstName: 'Charlie'},
-        {id: 101112, username: 'dan', firstName: 'Dan'}
-    ]
+    var users = []
 
     var rowTemplate
     var tbody
-    var createIcon
+    //var createIcon
     var userService = new AdminUserServiceClient()
     var $username
     var $password
@@ -17,9 +12,6 @@
     var $role
 
     jQuery(main)
-
-
-
 
     function main() {
         rowTemplate = jQuery('.wbdv-template')
@@ -33,7 +25,6 @@
             users = actualUsers
             renderUsers(users)
         })
-        enableCreate()
     }
 
     var selectedUser = null
@@ -47,48 +38,78 @@
     }
 
     function updateUser(){
-        selectedUser.username = $username.val()
-        selectedUser.password = $password.val()
-        selectedUser.firstName = $firstName.val()
-        selectedUser.lastName = $lastName.val()
-        selectedUser.role = $role.val()
-        userService.updateUser(selectedUser._id, selectedUser)
-            .then(status => {
-                var index = users.findIndex(user => user._id === selectedUser._id)
-                users[index] = selectedUser
-                renderUsers(users)
-        })
+
+        if (selectedUser === null) {
+            alert("Select a user before updating")
+        }
+        else {
+            selectedUser.username = $username.val()
+            selectedUser.password = $password.val()
+            selectedUser.firstName = $firstName.val()
+            selectedUser.lastName = $lastName.val()
+            selectedUser.role = $role.val()
+            userService.updateUser(selectedUser._id, selectedUser)
+                .then(status => {
+                    var index = users.findIndex(user => user._id === selectedUser._id)
+                    users[index] = selectedUser
+                    renderUsers(users)
+                    clearInputFields()
+                })
+        }
     }
 
     function renderUsers(users) {
         tbody.empty()
-        for(var u in users) {
-            const user = users[u]
+        for(var i=0; i<users.length; i++) {
+            const user = users[i]
             const rowClone = rowTemplate.clone()
             rowClone.removeClass('wbdev-hidden')
             rowClone.find('.wbdv-username').html(user.username)
             rowClone.find('.wbdv-first-name').html(user.firstName)
+            rowClone.find('.wbdv-last-name').html(user.lastName)
+            rowClone.find('.wbdv-role').html(user.role)
             rowClone.find('.wbdv-edit').attr('id', user._id)
+            rowClone.find('.wbdv-remove').attr('id', i)
             tbody.append(rowClone)
         }
+        $(".wbdv-create").click(createUser)
         $(".wbdv-edit").click(selectUser)
+        $(".wbdv-update").click(updateUser)
+        $(".wbdv-remove").click(deleteUser)
     }
 
-    function enableCreate() {
-        createIcon = $(".wbdv-create")
-        createIcon.click(function () {
-            var newUser = {
-                username: $username.val(),
-                password: $password.val(),
-                firstName: $firstName.val(),
-                lastName: $lastName.val(),
-                role: $role.val()
-            }
+    function createUser() {
+        var newUser = {
+            username: $username.val(),
+            password: $password.val(),
+            firstName: $firstName.val(),
+            lastName: $lastName.val(),
+            role: $role.val()
+        }
 
-            userService.createUser(newUser).then(function (actualUser){
-                users.push(newUser)
+        userService.createUser(newUser).then(function (actualUser){
+            users.push(newUser)
+            renderUsers(users)
+            clearInputFields()
+        })
+    }
+
+    function deleteUser(event) {
+        var button = $(event.target)
+        var index = button.attr("id")
+        var id = users[index]._id
+        userService.deleteUser(id)
+            .then(function (status) {
+                users.splice(index, 1)
                 renderUsers(users)
             })
-        })
+    }
+
+    function clearInputFields() {
+        $username.val('')
+        $password.val('')
+        $firstName.val('')
+        $lastName.val('')
+        selectedUser = null
     }
 })()
